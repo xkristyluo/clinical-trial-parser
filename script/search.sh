@@ -8,7 +8,7 @@
 
 set -eu
 
-CMD="src/cmd/search/main.go"
+CMD="src/cmd/search/search.go"
 CONFIG="src/resources/config/search.conf"
 
 go run "$CMD" -conf "$CONFIG" -logtostderr

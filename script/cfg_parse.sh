@@ -7,7 +7,7 @@
 
 set -eu
 
-CMD="src/cmd/cfg/main.go"
+CMD="src/cmd/cfg/cfg.go"
 CONFIG="src/resources/config/cfg.conf"
 INPUT="data/input/clinical_trials.csv"
 OUTPUT="data/output/cfg_parsed_clinical_trials.tsv"

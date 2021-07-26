@@ -14,9 +14,9 @@ EXTRACTED_FILE="data/output/ie_extracted_clinical_trials.tsv"
 NER_FILE="data/output/ie_ner_clinical_trials.tsv"
 PARSED_FILE="data/output/ie_parsed_clinical_trials.tsv"
 
-EXTRACT_CMD="src/cmd/extract/main.go"
+EXTRACT_CMD="src/cmd/extract/extract.go"
 NER_CMD="src/ie/ner.py"
-NEL_CMD="src/cmd/nel/main.go"
+NEL_CMD="src/cmd/nel/nel.go"
 NEL_CONFIG="src/resources/config/nel.conf"
 
 rm -f "$PARSED_FILE"

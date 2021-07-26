@@ -1,6 +1,6 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 
-package main
+package cfg
 
 import (
 	"encoding/csv"
