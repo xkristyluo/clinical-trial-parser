@@ -10,11 +10,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/conf"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/param"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/util/fio"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/util/timer"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/ct/studies"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/conf"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/param"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/util/fio"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/util/timer"
+	"github.com/facebookresearch/clinical-trial-parser/src/ct/studies"
 
 	"github.com/golang/glog"
 )

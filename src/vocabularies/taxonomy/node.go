@@ -8,10 +8,10 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/col/set"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/lsh"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/util/slice"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/util/text"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/col/set"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/lsh"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/util/slice"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/util/text"
 
 	"github.com/golang/glog"
 )

@@ -10,9 +10,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/param"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/resource"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/util/slice"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/param"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/resource"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/util/slice"
 	"github.com/golang/glog"
 )
 

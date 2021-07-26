@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/ct/relation"
+	"github.com/facebookresearch/clinical-trial-parser/src/ct/relation"
 )
 
 // Criterion defines an eligibility criterion record.

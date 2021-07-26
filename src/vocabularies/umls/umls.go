@@ -8,8 +8,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/col/set"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/vocabularies/taxonomy"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/col/set"
+	"github.com/facebookresearch/clinical-trial-parser/src/vocabularies/taxonomy"
 
 	"github.com/golang/glog"
 )

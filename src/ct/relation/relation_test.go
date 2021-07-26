@@ -5,7 +5,7 @@ package relation
 import (
 	"testing"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/ct/variables"
+	"github.com/facebookresearch/clinical-trial-parser/src/ct/variables"
 
 	"github.com/stretchr/testify/assert"
 )

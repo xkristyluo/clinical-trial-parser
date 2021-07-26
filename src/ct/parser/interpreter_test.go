@@ -5,7 +5,7 @@ package parser
 import (
 	"testing"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/ct/relation"
+	"github.com/facebookresearch/clinical-trial-parser/src/ct/relation"
 
 	"github.com/stretchr/testify/assert"
 )

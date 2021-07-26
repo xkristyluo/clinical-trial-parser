@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/col/set"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/ct/units"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/col/set"
+	"github.com/facebookresearch/clinical-trial-parser/src/ct/units"
 )
 
 // itemType defines the type of parsed items.

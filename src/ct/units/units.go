@@ -9,9 +9,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/param"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/trie"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/util/text"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/param"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/trie"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/util/text"
 
 	"github.com/golang/glog"
 )

@@ -5,8 +5,8 @@ package mesh
 import (
 	"strings"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/col/set"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/util/text"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/col/set"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/util/text"
 )
 
 // Categories lists the top-level categories in the MeSH descriptor hierarchy.

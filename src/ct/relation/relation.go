@@ -11,10 +11,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/col/set"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/util/slice"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/util/text"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/ct/variables"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/col/set"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/util/slice"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/util/text"
+	"github.com/facebookresearch/clinical-trial-parser/src/ct/variables"
 
 	"github.com/golang/glog"
 )

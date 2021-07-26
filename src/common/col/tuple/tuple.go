@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/util/intmath"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/util/intmath"
 )
 
 type Tuple []string

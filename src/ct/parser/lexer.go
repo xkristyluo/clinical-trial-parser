@@ -8,7 +8,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/util/text"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/util/text"
 )
 
 const (

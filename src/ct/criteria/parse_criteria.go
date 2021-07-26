@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/util/text"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/util/text"
 )
 
 var (

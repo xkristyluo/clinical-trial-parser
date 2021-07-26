@@ -3,7 +3,7 @@
 package parser
 
 import (
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/col/set"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/col/set"
 )
 
 // Element defines the element of the CYK state table.

@@ -9,13 +9,13 @@ import (
 	"os"
 	"strings"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/col/set"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/conf"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/util/fio"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/vocabularies"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/vocabularies/mesh"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/vocabularies/taxonomy"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/vocabularies/umls"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/col/set"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/conf"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/util/fio"
+	"github.com/facebookresearch/clinical-trial-parser/src/vocabularies"
+	"github.com/facebookresearch/clinical-trial-parser/src/vocabularies/mesh"
+	"github.com/facebookresearch/clinical-trial-parser/src/vocabularies/taxonomy"
+	"github.com/facebookresearch/clinical-trial-parser/src/vocabularies/umls"
 
 	"github.com/golang/glog"
 )

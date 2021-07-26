@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/col/set"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/lsh"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/util/fio"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/col/set"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/lsh"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/util/fio"
 
 	"github.com/golang/glog"
 )

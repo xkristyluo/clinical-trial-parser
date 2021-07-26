@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/col/set"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/util/slice"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/ct/criteria"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/ct/parser"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/ct/relation"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/ct/variables"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/col/set"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/util/slice"
+	"github.com/facebookresearch/clinical-trial-parser/src/ct/criteria"
+	"github.com/facebookresearch/clinical-trial-parser/src/ct/parser"
+	"github.com/facebookresearch/clinical-trial-parser/src/ct/relation"
+	"github.com/facebookresearch/clinical-trial-parser/src/ct/variables"
 )
 
 // Study defines a record for a clinical study.

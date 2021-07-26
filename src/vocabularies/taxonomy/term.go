@@ -7,8 +7,8 @@ import (
 	"math"
 	"sort"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/col/set"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/util/text"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/col/set"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/util/text"
 )
 
 // Term defines a vocabulary term or concept with a Key (e.g., name)

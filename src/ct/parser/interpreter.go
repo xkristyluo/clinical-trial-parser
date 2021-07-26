@@ -3,8 +3,8 @@
 package parser
 
 import (
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/ct/parser/production"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/ct/relation"
+	"github.com/facebookresearch/clinical-trial-parser/src/ct/parser/production"
+	"github.com/facebookresearch/clinical-trial-parser/src/ct/relation"
 )
 
 var interpreter *Interpreter

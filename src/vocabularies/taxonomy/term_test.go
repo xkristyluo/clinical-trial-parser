@@ -5,7 +5,7 @@ package taxonomy
 import (
 	"testing"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/col/set"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/col/set"
 
 	"github.com/stretchr/testify/assert"
 )

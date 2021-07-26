@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/common/col/set"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/ct/relation"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/ct/variables"
+	"github.com/facebookresearch/clinical-trial-parser/src/common/col/set"
+	"github.com/facebookresearch/clinical-trial-parser/src/ct/relation"
+	"github.com/facebookresearch/clinical-trial-parser/src/ct/variables"
 )
 
 // Tree defines the parse tree.

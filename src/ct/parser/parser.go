@@ -5,8 +5,8 @@ package parser
 import (
 	"strings"
 
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/ct/units"
-	"github.com/facebookresearch/Clinical-Trial-Parser/src/ct/variables"
+	"github.com/facebookresearch/clinical-trial-parser/src/ct/units"
+	"github.com/facebookresearch/clinical-trial-parser/src/ct/variables"
 
 	"github.com/golang/glog"
 )
