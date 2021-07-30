@@ -1,18 +1,12 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
-
 package cfg
 
 import (
-	"encoding/csv"
+	"encoding/json"
 	"flag"
 	"fmt"
-	"io"
 	"os"
-	"strings"
 
 	"github.com/facebookresearch/clinical-trial-parser/src/common/conf"
-	"github.com/facebookresearch/clinical-trial-parser/src/common/param"
-	"github.com/facebookresearch/clinical-trial-parser/src/common/util/fio"
 	"github.com/facebookresearch/clinical-trial-parser/src/common/util/timer"
 	"github.com/facebookresearch/clinical-trial-parser/src/ct/studies"
 	"github.com/facebookresearch/clinical-trial-parser/src/ct/units"
@@ -20,24 +14,6 @@ import (
 
 	"github.com/golang/glog"
 )
-
-// main runs the CFG parser on clinical study eligibility criteria.
-// The output is a file that contains parsed criteria in a JSON format.
-// This example serves as a reference design for the CFG parser code.
-func main() {
-	p := NewParser()
-	if err := p.LoadParameters(); err != nil {
-		glog.Fatal(err)
-	}
-	if err := p.Initialize(); err != nil {
-		glog.Fatal(err)
-	}
-	if err := p.Ingest(); err != nil {
-		glog.Fatal(err)
-	}
-	p.Parse()
-	p.Close()
-}
 
 // Parser defines the struct for processing eligibility criteria.
 type Parser struct {
@@ -51,25 +27,20 @@ func NewParser() *Parser {
 	return &Parser{clock: timer.New()}
 }
 
-// LoadParameters loads parameters from command line and a config file.
+// LoadParameters loads variables and units from command line and a config file.
 func (p *Parser) LoadParameters() error {
 	configFname := flag.String("conf", "", "Config file")
-	inputFname := flag.String("i", "", "Input file")
-	outputFname := flag.String("o", "", "Output file")
 
 	flag.Parse()
-	if len(*configFname) == 0 || len(*inputFname) == 0 || len(*outputFname) == 0 {
-		return fmt.Errorf("usage: %s -conf <config file> -i <input file> -o <output name>", os.Args[0])
+	if len(*configFname) == 0 {
+		return fmt.Errorf("usage: %s -conf <config file>", os.Args[0])
 	}
 
 	parameters, err := conf.Load(*configFname)
 	if err != nil {
 		return err
 	}
-	parameters.Put("input_file", *inputFname)
-	parameters.Put("output_file", *outputFname)
 	p.parameters = parameters
-
 	return nil
 }
 
@@ -92,68 +63,52 @@ func (p *Parser) Initialize() error {
 	return nil
 }
 
-// Ingest ingests eligibility criteria from a file.
-func (p *Parser) Ingest() error {
-	fname := p.parameters.Get("input_file")
-	f, err := os.Open(fname)
+// Ingest ingests eligibility criteria from json string input.
+func (p *Parser) Ingest(data string) error {
+	var ss []studies.Study
+	err := json.Unmarshal([]byte(data), &ss)
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+
+	// fmt.Printf("Studies : %+v", ss)
 
 	registry := studies.New()
-	r := csv.NewReader(f)
-	r.Comment = rune(param.Comment)
-
-	for {
-		line, err := r.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return err
-		}
-		if len(line) < 5 {
-			return fmt.Errorf("too few columns, at least 4 needed: %v", line)
-		}
-		nctID := line[0]
-		title := line[1]
-		// Skip line[2]: has_us_facility
-		conditions := strings.Split(line[3], param.FieldSep)
-		eligibilityCriteria := line[4]
-
-		study := studies.NewStudy(nctID, title, conditions, eligibilityCriteria)
-		registry.Add(study)
+	for _, study := range ss {
+		registry.Add(studies.NewStudy(study.Id, study.Name, study.Conditions, study.EligibilityCriteria))
 	}
-	glog.Infof("Ingested studies: %d\n", registry.Len())
 	p.registry = registry
 
 	return nil
 }
 
 // Parse parses the ingested eligibility criteria and writes the results to a file.
-func (p *Parser) Parse() {
-	header := "#nct_id\teligibility_type\tvariable_type\tcriterion_index\tcriterion\tquestion\trelation\n"
+func (p *Parser) Parse() string {
+	relationCnt := 0
 	criteriaCnt := 0
 	parsedCriteriaCnt := 0
-	relationCnt := 0
-	fname := p.parameters.Get("output_file")
-	writer := fio.Writer(fname)
-	defer writer.Close()
-	writer.WriteString(header)
+
+	var ps studies.ParsedStudies
+
 	for _, study := range p.registry {
-		writer.WriteString(study.Parse().Relations())
+		r := study.Parse().Relations()
+		s := studies.NewParsedStudy(study.Id, study.CriteriaCnt, r)
+		ps = append(ps, s)
+
+		relationCnt += study.RelationCount()
 		criteriaCnt += study.CriteriaCount()
 		parsedCriteriaCnt += study.ParsedCriteriaCount()
-		relationCnt += study.RelationCount()
-
 	}
+
 	ratio := 0.0
 	if criteriaCnt > 0 {
 		ratio = 100 * float64(relationCnt) / float64(criteriaCnt)
 	}
+
 	glog.Infof("Ingested studies: %d, Extracted criteria: %d, Parsed criteria: %d, Relations: %d, Relations per criteria: %.1f%%\n",
 		p.registry.Len(), criteriaCnt, parsedCriteriaCnt, relationCnt, ratio)
+
+	return ps.JSON()
 }
 
 // Close closes the parser.

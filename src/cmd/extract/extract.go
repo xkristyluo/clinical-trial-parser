@@ -116,12 +116,12 @@ func (p *Extractor) Extract() error {
 	for _, study := range p.registry {
 		inclusions, exclusions := study.Criteria()
 		for _, criterion := range inclusions {
-			if _, err := fmt.Fprintf(writer, "%s\t%s\t%s\n", study.NCT(), "inclusion", criterion); err != nil {
+			if _, err := fmt.Fprintf(writer, "%s\t%s\t%s\n", study.GetId(), "inclusion", criterion); err != nil {
 				return err
 			}
 		}
 		for _, criterion := range exclusions {
-			if _, err := fmt.Fprintf(writer, "%s\t%s\t%s\n", study.NCT(), "exclusion", criterion); err != nil {
+			if _, err := fmt.Fprintf(writer, "%s\t%s\t%s\n", study.GetId(), "exclusion", criterion); err != nil {
 				return err
 			}
 		}

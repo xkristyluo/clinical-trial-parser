@@ -7,14 +7,11 @@
 
 set -eu
 
-CMD="src/cmd/cfg/cfg.go"
+CMD="tests/cfg/cfg.go"
 CONFIG="src/resources/config/cfg.conf"
-INPUT="data/input/clinical_trials.csv"
-OUTPUT="data/output/cfg_parsed_clinical_trials.tsv"
 
-if ! go run "$CMD" -conf "$CONFIG" -i "$INPUT" -o "$OUTPUT" -logtostderr
+if ! go run "$CMD" -conf "$CONFIG" -logtostderr
 then
-  rm -f "$OUTPUT"
   echo "CFG parser failed."
   exit 1
 fi

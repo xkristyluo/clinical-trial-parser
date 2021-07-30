@@ -1,9 +1,6 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
-
 package studies
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/facebookresearch/clinical-trial-parser/src/common/col/set"
@@ -14,41 +11,52 @@ import (
 	"github.com/facebookresearch/clinical-trial-parser/src/ct/variables"
 )
 
-// Study defines a record for a clinical study.
 type Study struct {
-	nct                 string   // National clinical trial identifier
-	name                string   // Study name
-	conditions          []string // Conditions
-	eligibilityCriteria string   // Eligibility criteria
-
-	inclusionCriteria criteria.Criteria
-	exclusionCriteria criteria.Criteria
-	criteriaCnt       int
+	Id                  string            `json:"study_id,omitempty"`
+	Name                string            `json:"study_name,omitempty"`
+	Conditions          []string          `json:"conditions,omitempty"`
+	EligibilityCriteria string            `json:"eligibility_criteria,omitempty"`
+	InclusionCriteria   criteria.Criteria `json:"-"`
+	ExclusionCriteria   criteria.Criteria `json:"-"`
+	CriteriaCnt         int               `json:"criteria_count"`
 }
 
-// NewStudy creates a record for a new study.
-func NewStudy(nct, name string, conditions []string, eligibilityCriteria string) *Study {
-	return &Study{nct: nct, name: name, conditions: conditions, eligibilityCriteria: eligibilityCriteria}
+type ParsedStudy struct {
+	Id            string                 `json:"study_id,omitempty"`
+	CriteriaCnt   int                    `json:"criteria_count"`
+	ParsedCritera criteria.ParsedCritera `json:"parsed_critera,omitempty"`
 }
 
-// NCT returns the national clinical trial id.
-func (s *Study) NCT() string {
-	return s.nct
+func NewStudy(id, name string, conditions []string, eligibilityCriteria string) *Study {
+	return &Study{Id: id, Name: name, Conditions: conditions, EligibilityCriteria: eligibilityCriteria}
 }
 
-// Name returns the study name.
-func (s *Study) Name() string {
-	return s.name
+func NewParsedStudy(id string, criteriaCnt int, parsedCritera criteria.ParsedCritera) *ParsedStudy {
+	return &ParsedStudy{
+		Id:            id,
+		CriteriaCnt:   criteriaCnt,
+		ParsedCritera: parsedCritera,
+	}
 }
 
-// InclusionCriteria returns the inclusion criteria for the study.
-func (s *Study) InclusionCriteria() criteria.Criteria {
-	return s.inclusionCriteria
+func (s *Study) GetId() string {
+	return s.Id
 }
 
-// ExclusionCriteria returns the exclusion criteria for the study.
-func (s *Study) ExclusionCriteria() criteria.Criteria {
-	return s.exclusionCriteria
+func (s *Study) GetName() string {
+	return s.Name
+}
+
+func (s *Study) GetInclusionCriteria() criteria.Criteria {
+	return s.InclusionCriteria
+}
+
+func (s *Study) GetExclusionCriteria() criteria.Criteria {
+	return s.ExclusionCriteria
+}
+
+func (s *Study) CriteriaCount() int {
+	return s.CriteriaCnt
 }
 
 // Parse parses eligibility criteria text to relations for the study s.
@@ -56,7 +64,7 @@ func (s *Study) Parse() *Study {
 	interpreter := parser.Get()
 
 	inclusions, exclusions := s.Criteria()
-	s.criteriaCnt = len(inclusions) + len(exclusions)
+	s.CriteriaCnt = len(inclusions) + len(exclusions)
 
 	// Parse inclusion criteria:
 	inclusionCriteria := criteria.NewCriteria()
@@ -79,7 +87,7 @@ func (s *Study) Parse() *Study {
 			}
 		}
 	}
-	s.inclusionCriteria = inclusionCriteria
+	s.InclusionCriteria = inclusionCriteria
 
 	// Parse exclusion criteria:
 	exclusionCriteria := criteria.NewCriteria()
@@ -104,7 +112,7 @@ func (s *Study) Parse() *Study {
 		}
 	}
 
-	s.exclusionCriteria = exclusionCriteria
+	s.ExclusionCriteria = exclusionCriteria
 	s.Transform()
 
 	return s
@@ -112,7 +120,7 @@ func (s *Study) Parse() *Study {
 
 // Criteria extracts inclusion and exclusion criteria from the eligibility criteria string.
 func (s *Study) Criteria() ([]string, []string) {
-	eligibilityCriteria := criteria.Normalize(s.eligibilityCriteria)
+	eligibilityCriteria := criteria.Normalize(s.EligibilityCriteria)
 
 	// Parse inclusion criteria:
 	var inclusions []string
@@ -144,45 +152,42 @@ func (s *Study) Criteria() ([]string, []string) {
 // Transform transforms criteria relations by converting parsed values to strings of valid literals.
 // If a valid literal cannot be inferred, the confidence score of the relation is set to zero.
 func (s *Study) Transform() {
-	s.inclusionCriteria.Relations().Transform()
-	s.exclusionCriteria.Relations().Transform()
+	s.InclusionCriteria.Relations().Transform()
+	s.ExclusionCriteria.Relations().Transform()
 }
 
 // Relations returns the string representation of the parsed criteria.
 // Relations that are parsed from the same criterion and are conjoined
 // by 'or' have the same criterion id (cid).
-func (s *Study) Relations() string {
+func (s *Study) Relations() criteria.ParsedCritera {
 	variableCatalog := variables.Get()
-	relations := ""
+	var pc criteria.ParsedCritera
 	cid := 0
-	for _, c := range s.inclusionCriteria {
+	for _, c := range s.InclusionCriteria {
 		for _, r := range c.Relations() {
 			q := variableCatalog.Question(r.ID)
-			relations += fmt.Sprintf("%s\t%s\t%s\t%d\t%s\t%s\t%s\n",
-				s.nct, "inclusion", r.VariableType.String(), cid, c.String(), q, r.JSON())
+			p := criteria.NewParsedCriterion("inclusion", r.VariableType.String(), cid, c.String(), q, *r)
+			pc = append(pc, p)
 		}
 		cid++
 	}
-	for _, c := range s.exclusionCriteria {
+	for _, c := range s.ExclusionCriteria {
 		for _, r := range c.Relations() {
 			q := variableCatalog.Question(r.ID)
-			relations += fmt.Sprintf("%s\t%s\t%s\t%d\t%s\t%s\t%s\n",
-				s.nct, "exclusion", r.VariableType.String(), cid, c.String(), q, r.JSON())
+			p := criteria.NewParsedCriterion("exclusion", r.VariableType.String(), cid, c.String(), q, *r)
+			pc = append(pc, p)
 		}
 		cid++
 	}
-	return relations
-}
 
-// CriteriaCount returns the number of criteria.
-func (s *Study) CriteriaCount() int {
-	return s.criteriaCnt
+	return pc
+	// return pc.JSON()
 }
 
 // ParsedCriteriaCount returns the number of parsed unique criteria.
 func (s *Study) ParsedCriteriaCount() int {
 	parsedCriteria := set.New()
-	for _, c := range s.inclusionCriteria {
+	for _, c := range s.InclusionCriteria {
 		for _, r := range c.Relations() {
 			if r.Valid() {
 				parsedCriteria.Add(c.String())
@@ -190,7 +195,7 @@ func (s *Study) ParsedCriteriaCount() int {
 			}
 		}
 	}
-	for _, c := range s.exclusionCriteria {
+	for _, c := range s.ExclusionCriteria {
 		for _, r := range c.Relations() {
 			if r.Valid() {
 				parsedCriteria.Add(c.String())
@@ -204,14 +209,14 @@ func (s *Study) ParsedCriteriaCount() int {
 // RelationCount returns the number of parsed relations.
 func (s *Study) RelationCount() int {
 	cnt := 0
-	for _, c := range s.inclusionCriteria {
+	for _, c := range s.InclusionCriteria {
 		for _, r := range c.Relations() {
 			if r.Valid() {
 				cnt++
 			}
 		}
 	}
-	for _, c := range s.exclusionCriteria {
+	for _, c := range s.ExclusionCriteria {
 		for _, r := range c.Relations() {
 			if r.Valid() {
 				cnt++

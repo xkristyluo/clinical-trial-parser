@@ -45,7 +45,7 @@ func TestAndCriteriaParse(t *testing.T) {
 
 	study := NewStudy("ID012345", "Better Health for Everybody", nil, input)
 	study.Parse()
-	actualInclusionCriteria := study.InclusionCriteria()
+	actualInclusionCriteria := study.GetInclusionCriteria()
 	a.Len(actualInclusionCriteria, 4)
 	for i, criterion := range actualInclusionCriteria {
 		actualInclusions := criterion.Relations()
@@ -53,7 +53,7 @@ func TestAndCriteriaParse(t *testing.T) {
 		a.Equal(expectedInclusions[i], actualInclusions)
 	}
 
-	actualExclusionCriteria := study.ExclusionCriteria()
+	actualExclusionCriteria := study.GetExclusionCriteria()
 	a.Len(actualExclusionCriteria, 1)
 	actualExclusions := actualExclusionCriteria.Relations()
 	actualExclusions.SetScore(0)
@@ -97,7 +97,7 @@ func TestOrCriteriaParse(t *testing.T) {
 
 	study := NewStudy("ID012345", "Better Health for Everybody", nil, input)
 	study.Parse()
-	actualInclusionCriteria := study.InclusionCriteria()
+	actualInclusionCriteria := study.GetInclusionCriteria()
 	a.Len(actualInclusionCriteria, 4)
 	for i, criterion := range actualInclusionCriteria {
 		actualInclusions := criterion.Relations()
@@ -105,7 +105,7 @@ func TestOrCriteriaParse(t *testing.T) {
 		a.Equal(expectedInclusions[i], actualInclusions)
 	}
 
-	actualExclusionCriteria := study.ExclusionCriteria()
+	actualExclusionCriteria := study.GetExclusionCriteria()
 	a.Len(actualExclusionCriteria, 1)
 	actualExclusions := actualExclusionCriteria[0].Relations()
 	actualExclusions.SetScore(0)
@@ -148,7 +148,7 @@ func TestOrdinalNegationCriteriaParse(t *testing.T) {
 
 	study := NewStudy("ID012345", "Better Health for Everybody", nil, input)
 	study.Parse()
-	actualInclusionCriteria := study.InclusionCriteria()
+	actualInclusionCriteria := study.GetInclusionCriteria()
 	a.Len(actualInclusionCriteria, 4)
 	for i, criterion := range actualInclusionCriteria {
 		actualInclusions := criterion.Relations()
@@ -156,7 +156,7 @@ func TestOrdinalNegationCriteriaParse(t *testing.T) {
 		a.Equal(expectedInclusions[i], actualInclusions)
 	}
 
-	actualExclusionCriteria := study.ExclusionCriteria()
+	actualExclusionCriteria := study.GetExclusionCriteria()
 	a.Len(actualExclusionCriteria, 1)
 	actualExclusions := actualExclusionCriteria[0].Relations()
 	actualExclusions.SetScore(0)

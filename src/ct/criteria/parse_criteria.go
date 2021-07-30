@@ -3,10 +3,12 @@
 package criteria
 
 import (
+	"encoding/json"
 	"regexp"
 	"strings"
 
 	"github.com/facebookresearch/clinical-trial-parser/src/common/util/text"
+	"github.com/facebookresearch/clinical-trial-parser/src/ct/relation"
 )
 
 var (
@@ -23,6 +25,35 @@ var (
 
 	empty = []string{}
 )
+
+type ParsedCriterion struct {
+	EligibilityType string            `json:"eligibility_type,omitempty"` // inclusion or exclusion
+	VariableType    string            `json:"variable_type,omitempty"`    // numerical or ordinal
+	CriterionIndex  int               `json:"criterion_index,omitempty"`
+	Criterion       string            `json:"criterion,omitempty"`
+	Question        string            `json:"question,omitempty"`
+	Relation        relation.Relation `json:"relation,omitempty"`
+}
+
+type ParsedCritera []*ParsedCriterion
+
+func NewParsedCriterion(eligibilityType, variableType string, criterionIndex int, criterion, question string, relation relation.Relation) *ParsedCriterion {
+	return &ParsedCriterion{
+		EligibilityType: eligibilityType,
+		VariableType:    variableType,
+		CriterionIndex:  criterionIndex,
+		Criterion:       criterion,
+		Question:        question,
+		Relation:        relation,
+	}
+}
+
+func (p *ParsedCritera) JSON() string {
+	if data, err := json.Marshal(p); err == nil {
+		return string(data)
+	}
+	return ""
+}
 
 // Normalize normalizes eligibility criteria text. For now, non-informative
 // "Does not meet inclusion criteria" like criteria are removed.

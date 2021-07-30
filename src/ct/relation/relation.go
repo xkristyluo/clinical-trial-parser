@@ -40,7 +40,7 @@ type Relation struct {
 	Value        []string       `json:"value,omitempty"` // Valid values of categorical relation
 	Lower        *Limit         `json:"lower,omitempty"` // Lower bound of numerical relation condition
 	Upper        *Limit         `json:"upper,omitempty"` // Upper bound of numerical relation condition
-	VariableType variables.Type `json:"variableType"`    // Type of relation
+	VariableType variables.Type `json:"variable_type"`   // Type of relation
 	Score        float64        `json:"score"`           // Confidence estimate of the relation representation being correct
 }
 

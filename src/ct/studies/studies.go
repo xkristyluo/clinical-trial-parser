@@ -2,12 +2,22 @@
 
 package studies
 
+import "encoding/json"
+
 // Studies defines a collection of clinical study records.
 type Studies []*Study
 
-// NewStudies creates a slice of studies.
+type ParsedStudies []*ParsedStudy
+
 func New() Studies {
 	return make(Studies, 0)
+}
+
+func (s *ParsedStudies) JSON() string {
+	if data, err := json.Marshal(s); err == nil {
+		return string(data)
+	}
+	return ""
 }
 
 // Add adds the study to the studies.
