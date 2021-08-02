@@ -22,20 +22,20 @@ type Study struct {
 }
 
 type ParsedStudy struct {
-	Id            string                 `json:"study_id,omitempty"`
-	CriteriaCnt   int                    `json:"criteria_count"`
-	ParsedCritera criteria.ParsedCritera `json:"parsed_critera,omitempty"`
+	Id             string                  `json:"study_id,omitempty"`
+	CriteriaCnt    int                     `json:"criteria_count"`
+	ParsedCriteria criteria.ParsedCriteria `json:"parsed_criteria,omitempty"`
 }
 
 func NewStudy(id, name string, conditions []string, eligibilityCriteria string) *Study {
 	return &Study{Id: id, Name: name, Conditions: conditions, EligibilityCriteria: eligibilityCriteria}
 }
 
-func NewParsedStudy(id string, criteriaCnt int, parsedCritera criteria.ParsedCritera) *ParsedStudy {
+func NewParsedStudy(id string, criteriaCnt int, ParsedCriteria criteria.ParsedCriteria) *ParsedStudy {
 	return &ParsedStudy{
-		Id:            id,
-		CriteriaCnt:   criteriaCnt,
-		ParsedCritera: parsedCritera,
+		Id:             id,
+		CriteriaCnt:    criteriaCnt,
+		ParsedCriteria: ParsedCriteria,
 	}
 }
 
@@ -159,9 +159,9 @@ func (s *Study) Transform() {
 // Relations returns the string representation of the parsed criteria.
 // Relations that are parsed from the same criterion and are conjoined
 // by 'or' have the same criterion id (cid).
-func (s *Study) Relations() criteria.ParsedCritera {
+func (s *Study) Relations() criteria.ParsedCriteria {
 	variableCatalog := variables.Get()
-	var pc criteria.ParsedCritera
+	var pc criteria.ParsedCriteria
 	cid := 0
 	for _, c := range s.InclusionCriteria {
 		for _, r := range c.Relations() {

@@ -35,7 +35,7 @@ type ParsedCriterion struct {
 	Relation        relation.Relation `json:"relation,omitempty"`
 }
 
-type ParsedCritera []*ParsedCriterion
+type ParsedCriteria []*ParsedCriterion
 
 func NewParsedCriterion(eligibilityType, variableType string, criterionIndex int, criterion, question string, relation relation.Relation) *ParsedCriterion {
 	return &ParsedCriterion{
@@ -48,7 +48,7 @@ func NewParsedCriterion(eligibilityType, variableType string, criterionIndex int
 	}
 }
 
-func (p *ParsedCritera) JSON() string {
+func (p *ParsedCriteria) JSON() string {
 	if data, err := json.Marshal(p); err == nil {
 		return string(data)
 	}
