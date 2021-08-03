@@ -2,7 +2,7 @@ package cfg
 
 import (
 	"encoding/json"
-	"flag"
+	"errors"
 	"fmt"
 	"os"
 
@@ -27,16 +27,32 @@ func NewParser() *Parser {
 	return &Parser{clock: timer.New()}
 }
 
+// Main function to parse eligibility criteria
+func CfgParse(registry string) (string, error) {
+	p := NewParser()
+	if err := p.LoadParameters(); err != nil {
+		return "", fmt.Errorf("cfg parser failed to load config file: %v", err)
+	}
+	if err := p.InitParameters(); err != nil {
+		return "", fmt.Errorf("cfg parser failed to initialize variables and inputs: %v", err)
+	}
+	if err := p.UnmarshalInput(registry); err != nil {
+		return "", fmt.Errorf("cfg parser failed to unmarshal the json input: %v", err)
+	}
+	result := p.Parse()
+	p.Close()
+
+	return result, nil
+}
+
 // LoadParameters loads variables and units from command line and a config file.
 func (p *Parser) LoadParameters() error {
-	configFname := flag.String("conf", "", "Config file")
-
-	flag.Parse()
-	if len(*configFname) == 0 {
-		return fmt.Errorf("usage: %s -conf <config file>", os.Args[0])
+	configFname := os.Getenv("CONFIG_FILE")
+	if len(configFname) == 0 {
+		return errors.New("No config file is found!")
 	}
 
-	parameters, err := conf.Load(*configFname)
+	parameters, err := conf.Load(configFname)
 	if err != nil {
 		return err
 	}
@@ -44,8 +60,8 @@ func (p *Parser) LoadParameters() error {
 	return nil
 }
 
-// Initialize initializes the parser by loading the resource data.
-func (p *Parser) Initialize() error {
+// InitParameters initializes the parser by loading the resource data.
+func (p *Parser) InitParameters() error {
 	fname := p.parameters.GetResourcePath("variable_file")
 	variableDictionary, err := variables.Load(fname)
 	if err != nil {
@@ -63,15 +79,15 @@ func (p *Parser) Initialize() error {
 	return nil
 }
 
-// Ingest ingests eligibility criteria from json string input.
-func (p *Parser) Ingest(data string) error {
+// UnmarshalInput ingests eligibility criteria from json string input.
+func (p *Parser) UnmarshalInput(data string) error {
 	var ss []studies.Study
 	err := json.Unmarshal([]byte(data), &ss)
 	if err != nil {
 		return err
 	}
 
-	// fmt.Printf("Studies : %+v", ss)
+	// fmt.Printf("cfg got Studies : %+v", ss)
 
 	registry := studies.New()
 	for _, study := range ss {

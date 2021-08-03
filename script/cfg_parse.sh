@@ -8,9 +8,9 @@
 set -eu
 
 CMD="tests/cfg/cfg.go"
-CONFIG="src/resources/config/cfg.conf"
+export CONFIG_FILE="src/resources/config/cfg.conf"
 
-if ! go run "$CMD" -conf "$CONFIG" -logtostderr
+if ! go run "$CMD" -logtostderr
 then
   echo "CFG parser failed."
   exit 1
