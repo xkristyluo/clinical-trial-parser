@@ -29,7 +29,7 @@ var (
 type ParsedCriterion struct {
 	EligibilityType string            `json:"eligibility_type,omitempty"` // inclusion or exclusion
 	VariableType    string            `json:"variable_type,omitempty"`    // numerical or ordinal
-	CriterionIndex  int               `json:"criterion_index,omitempty"`
+	CriterionIndex  int               `json:"criterion_index"`
 	Criterion       string            `json:"criterion,omitempty"`
 	Question        string            `json:"question,omitempty"`
 	Relation        relation.Relation `json:"relation,omitempty"`
