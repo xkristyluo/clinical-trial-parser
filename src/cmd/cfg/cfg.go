@@ -2,9 +2,9 @@ package cfg
 
 import (
 	"encoding/json"
-	"errors"
+	"flag"
 	"fmt"
-	"os"
+	"log"
 
 	"github.com/facebookresearch/clinical-trial-parser/src/common/conf"
 	"github.com/facebookresearch/clinical-trial-parser/src/common/util/timer"
@@ -13,6 +13,10 @@ import (
 	"github.com/facebookresearch/clinical-trial-parser/src/ct/variables"
 
 	"github.com/golang/glog"
+)
+
+var (
+	configFname = flag.String("conf", "", "configuration file")
 )
 
 // Parser defines the struct for processing eligibility criteria.
@@ -47,12 +51,14 @@ func CfgParse(registry string) (string, error) {
 
 // LoadParameters loads variables and units from command line and a config file.
 func (p *Parser) LoadParameters() error {
-	configFname := os.Getenv("CONFIG_FILE")
-	if len(configFname) == 0 {
-		return errors.New("No config file is found!")
+	flag.Parse()
+
+	log.Printf("config file path: %s", *configFname)
+	if len(*configFname) == 0 {
+		return fmt.Errorf("no configuration file found: %s", *configFname)
 	}
 
-	parameters, err := conf.Load(configFname)
+	parameters, err := conf.Load(*configFname)
 	if err != nil {
 		return err
 	}
@@ -63,6 +69,7 @@ func (p *Parser) LoadParameters() error {
 // InitParameters initializes the parser by loading the resource data.
 func (p *Parser) InitParameters() error {
 	fname := p.parameters.GetResourcePath("variable_file")
+	log.Printf("variable file path: %v", fname)
 	variableDictionary, err := variables.Load(fname)
 	if err != nil {
 		return err
@@ -70,6 +77,7 @@ func (p *Parser) InitParameters() error {
 	variables.Set(variableDictionary)
 
 	fname = p.parameters.GetResourcePath("unit_file")
+	log.Printf("unit file path: %v", fname)
 	unitDictionary, err := units.Load(fname)
 	if err != nil {
 		return err
