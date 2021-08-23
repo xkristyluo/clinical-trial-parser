@@ -35,7 +35,22 @@ func (i *Interpreter) Interpret(input string) (relation.Relations, relation.Rela
 	list := i.parser.Parse(input)
 	list.FixMissingVariable()
 	trees := i.buildTrees(list)
-	return trees.Relations()
+	orRs, andRs := trees.Relations()
+	for _, listVal := range list {
+		for _, item := range listVal {
+			for _, orR := range orRs {
+				if item.val == orR.Name {
+					orR.Position = int(item.pos)
+				}
+			}
+			for _, andR := range andRs {
+				if item.val == andR.Name {
+					andR.Position = int(item.pos)
+				}
+			}
+		}
+	}
+	return orRs, andRs
 }
 
 // buildTrees builds trees from the parsed items. Trees represent criteria.

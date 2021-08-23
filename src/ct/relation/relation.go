@@ -42,6 +42,7 @@ type Relation struct {
 	Upper        *Limit         `json:"upper,omitempty"` // Upper bound of numerical relation condition
 	VariableType variables.Type `json:"variable_type"`   // Type of relation
 	Score        float64        `json:"score"`           // Confidence estimate of the relation representation being correct
+	Position     int            `json:"position"`        // Position in current input string
 }
 
 // Relations defines a slice of relations.

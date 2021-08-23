@@ -82,6 +82,7 @@ func (t itemType) String() string {
 type Item struct {
 	typ itemType
 	val string
+	pos Pos
 }
 
 // NewItem creates a new item.
@@ -136,7 +137,7 @@ func (i *Item) Negate() *Item {
 
 // String returns the string representation of the item.
 func (i *Item) String() string {
-	return fmt.Sprintf("{type:%q,value:%q}", i.typ.String(), i.val)
+	return fmt.Sprintf("{type:%q,value:%q,pos:%v}", i.typ.String(), i.val, i.pos)
 }
 
 // Items defines a slice of items.
