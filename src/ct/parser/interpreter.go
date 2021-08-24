@@ -40,12 +40,14 @@ func (i *Interpreter) Interpret(input string) (relation.Relations, relation.Rela
 		for _, item := range listVal {
 			for _, orR := range orRs {
 				if item.val == orR.Name {
-					orR.Position = int(item.pos)
+					orR.Start = int(item.pos)
+					orR.End = int(item.pos) + len(item.val)
 				}
 			}
 			for _, andR := range andRs {
 				if item.val == andR.Name {
-					andR.Position = int(item.pos)
+					andR.Start = int(item.pos)
+					andR.End = int(item.pos) + len(item.val)
 				}
 			}
 		}
