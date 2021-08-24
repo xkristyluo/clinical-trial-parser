@@ -22,8 +22,8 @@ type Criterion struct {
 type Criteria []*Criterion
 
 // NewCriterion creates a new criterion.
-func NewCriterion(text string, score float64, rels relation.Relations) *Criterion {
-	return &Criterion{text: text, score: score, relations: rels}
+func NewCriterion(text string, score float64, rels relation.Relations, index int) *Criterion {
+	return &Criterion{text: text, score: score, relations: rels, ClusterID: index}
 }
 
 // NewCriteria creates a new slice of criteria.

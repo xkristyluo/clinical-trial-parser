@@ -68,7 +68,7 @@ func (s *Study) Parse() *Study {
 
 	// Parse inclusion criteria:
 	inclusionCriteria := criteria.NewCriteria()
-	for _, inclusion := range inclusions {
+	for index, inclusion := range inclusions {
 		lowercase := strings.ToLower(inclusion)
 		orRelations, andRelations := interpreter.Interpret(lowercase)
 
@@ -76,13 +76,13 @@ func (s *Study) Parse() *Study {
 		andRelations.Process()
 
 		if !orRelations.Empty() {
-			criterion := criteria.NewCriterion(inclusion, orRelations.MinScore(), orRelations)
+			criterion := criteria.NewCriterion(inclusion, orRelations.MinScore(), orRelations, index)
 			inclusionCriteria = append(inclusionCriteria, criterion)
 		}
 		if !andRelations.Empty() {
 			for _, r := range andRelations {
 				rs := relation.Relations{r}
-				criterion := criteria.NewCriterion(inclusion, rs.MinScore(), rs)
+				criterion := criteria.NewCriterion(inclusion, rs.MinScore(), rs, index)
 				inclusionCriteria = append(inclusionCriteria, criterion)
 			}
 		}
@@ -91,7 +91,7 @@ func (s *Study) Parse() *Study {
 
 	// Parse exclusion criteria:
 	exclusionCriteria := criteria.NewCriteria()
-	for _, exclusion := range exclusions {
+	for index, exclusion := range exclusions {
 		lowercase := strings.ToLower(exclusion)
 		orRelations, andRelations := interpreter.Interpret(lowercase)
 		orRelations.Process()
@@ -100,13 +100,13 @@ func (s *Study) Parse() *Study {
 		andRelations.Negate()
 
 		if !andRelations.Empty() {
-			criterion := criteria.NewCriterion(exclusion, andRelations.MinScore(), andRelations)
+			criterion := criteria.NewCriterion(exclusion, andRelations.MinScore(), andRelations, index)
 			exclusionCriteria = append(exclusionCriteria, criterion)
 		}
 		if !orRelations.Empty() {
 			for _, r := range orRelations {
 				rs := relation.Relations{r}
-				criterion := criteria.NewCriterion(exclusion, rs.MinScore(), rs)
+				criterion := criteria.NewCriterion(exclusion, rs.MinScore(), rs, index)
 				exclusionCriteria = append(exclusionCriteria, criterion)
 			}
 		}
@@ -166,7 +166,7 @@ func (s *Study) Relations() criteria.ParsedCriteria {
 	for _, c := range s.InclusionCriteria {
 		for _, r := range c.Relations() {
 			q := variableCatalog.Question(r.ID)
-			p := criteria.NewParsedCriterion("inclusion", r.VariableType.String(), cid, c.String(), q, *r)
+			p := criteria.NewParsedCriterion("inclusion", r.VariableType.String(), c.ClusterID, c.String(), q, *r)
 			pc = append(pc, p)
 		}
 		cid++
@@ -174,7 +174,7 @@ func (s *Study) Relations() criteria.ParsedCriteria {
 	for _, c := range s.ExclusionCriteria {
 		for _, r := range c.Relations() {
 			q := variableCatalog.Question(r.ID)
-			p := criteria.NewParsedCriterion("exclusion", r.VariableType.String(), cid, c.String(), q, *r)
+			p := criteria.NewParsedCriterion("exclusion", r.VariableType.String(), c.ClusterID, c.String(), q, *r)
 			pc = append(pc, p)
 		}
 		cid++
