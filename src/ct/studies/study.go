@@ -75,17 +75,17 @@ func (s *Study) Parse() *Study {
 		orRelations.Process()
 		andRelations.Process()
 
-		if !orRelations.Empty() {
-			criterion := criteria.NewCriterion(inclusion, orRelations.MinScore(), orRelations, index)
+		// if !orRelations.Empty() {
+		criterion := criteria.NewCriterion(inclusion, orRelations.MinScore(), orRelations, index)
+		inclusionCriteria = append(inclusionCriteria, criterion)
+		// }
+		// if !andRelations.Empty() {
+		for _, r := range andRelations {
+			rs := relation.Relations{r}
+			criterion := criteria.NewCriterion(inclusion, rs.MinScore(), rs, index)
 			inclusionCriteria = append(inclusionCriteria, criterion)
 		}
-		if !andRelations.Empty() {
-			for _, r := range andRelations {
-				rs := relation.Relations{r}
-				criterion := criteria.NewCriterion(inclusion, rs.MinScore(), rs, index)
-				inclusionCriteria = append(inclusionCriteria, criterion)
-			}
-		}
+		// }
 	}
 	s.InclusionCriteria = inclusionCriteria
 
@@ -99,17 +99,17 @@ func (s *Study) Parse() *Study {
 		orRelations.Negate()
 		andRelations.Negate()
 
-		if !andRelations.Empty() {
-			criterion := criteria.NewCriterion(exclusion, andRelations.MinScore(), andRelations, index)
+		// if !andRelations.Empty() {
+		criterion := criteria.NewCriterion(exclusion, andRelations.MinScore(), andRelations, index)
+		exclusionCriteria = append(exclusionCriteria, criterion)
+		// }
+		// if !orRelations.Empty() {
+		for _, r := range orRelations {
+			rs := relation.Relations{r}
+			criterion := criteria.NewCriterion(exclusion, rs.MinScore(), rs, index)
 			exclusionCriteria = append(exclusionCriteria, criterion)
 		}
-		if !orRelations.Empty() {
-			for _, r := range orRelations {
-				rs := relation.Relations{r}
-				criterion := criteria.NewCriterion(exclusion, rs.MinScore(), rs, index)
-				exclusionCriteria = append(exclusionCriteria, criterion)
-			}
-		}
+		// }
 	}
 
 	s.ExclusionCriteria = exclusionCriteria
@@ -164,17 +164,29 @@ func (s *Study) Relations() criteria.ParsedCriteria {
 	var pc criteria.ParsedCriteria
 	cid := 0
 	for _, c := range s.InclusionCriteria {
-		for _, r := range c.Relations() {
-			q := variableCatalog.Question(r.ID)
-			p := criteria.NewParsedCriterion("inclusion", r.VariableType.String(), c.ClusterID, c.String(), q, *r)
+		relationR := c.Relations()
+		if len(relationR) > 0 {
+			for _, r := range c.Relations() {
+				q := variableCatalog.Question(r.ID)
+				p := criteria.NewParsedCriterion("inclusion", r.VariableType.String(), c.ClusterID, c.String(), q, *r)
+				pc = append(pc, p)
+			}
+		} else {
+			p := criteria.NewParsedCriterion("inclusion", "", c.ClusterID, c.String(), "", relation.Relation{})
 			pc = append(pc, p)
 		}
 		cid++
 	}
 	for _, c := range s.ExclusionCriteria {
-		for _, r := range c.Relations() {
-			q := variableCatalog.Question(r.ID)
-			p := criteria.NewParsedCriterion("exclusion", r.VariableType.String(), c.ClusterID, c.String(), q, *r)
+		relationR := c.Relations()
+		if len(relationR) > 0 {
+			for _, r := range c.Relations() {
+				q := variableCatalog.Question(r.ID)
+				p := criteria.NewParsedCriterion("exclusion", r.VariableType.String(), c.ClusterID, c.String(), q, *r)
+				pc = append(pc, p)
+			}
+		} else {
+			p := criteria.NewParsedCriterion("exclusion", "", c.ClusterID, c.String(), "", relation.Relation{})
 			pc = append(pc, p)
 		}
 		cid++
