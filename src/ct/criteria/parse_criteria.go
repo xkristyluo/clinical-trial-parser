@@ -4,6 +4,7 @@ package criteria
 
 import (
 	"encoding/json"
+	"log"
 	"regexp"
 	"strings"
 
@@ -62,6 +63,13 @@ func Normalize(s string) string {
 	return s
 }
 
+func PrintNew(text string, input []string) {
+	log.Printf("%s===============", text)
+	for index, value := range input {
+		log.Printf("%d: %v", index, value)
+	}
+}
+
 // ExtractInclusionCriteria extracts a block of inclusion criteria from the string.
 func ExtractInclusionCriteria(s string) []string {
 	return extractCriteria(s, reMatchInclusions)
@@ -91,6 +99,7 @@ func extractCriteria(s string, r *regexp.Regexp) []string {
 // Split splits eligibility criteria numberings into individual criteria.
 func Split(s string) []string {
 	rules := reCriteriaSplitter.Split(s, -1)
+	PrintNew("Split", rules)
 	numTabs, header, foundTab := initLine(s)
 	if numTabs == 0 {
 		return rules
