@@ -8,7 +8,6 @@ import (
 	"github.com/facebookresearch/clinical-trial-parser/src/ct/criteria"
 	"github.com/facebookresearch/clinical-trial-parser/src/ct/parser"
 	"github.com/facebookresearch/clinical-trial-parser/src/ct/relation"
-	"github.com/facebookresearch/clinical-trial-parser/src/ct/variables"
 )
 
 type Study struct {
@@ -160,19 +159,17 @@ func (s *Study) Transform() {
 // Relations that are parsed from the same criterion and are conjoined
 // by 'or' have the same criterion id (cid).
 func (s *Study) Relations() criteria.ParsedCriteria {
-	variableCatalog := variables.Get()
+	// variableCatalog := variables.Get()
+	// r.VariableType.String()
 	var pc criteria.ParsedCriteria
 	cid := 0
 	for _, c := range s.InclusionCriteria {
 		relationR := c.Relations()
 		if len(relationR) > 0 {
-			for _, r := range c.Relations() {
-				q := variableCatalog.Question(r.ID)
-				p := criteria.NewParsedCriterion("inclusion", r.VariableType.String(), c.ClusterID, c.String(), q, *r)
-				pc = append(pc, p)
-			}
+			p := criteria.NewParsedCriterion("inclusion", "", c.ClusterID, c.String(), "", relationR)
+			pc = append(pc, p)
 		} else {
-			p := criteria.NewParsedCriterion("inclusion", "", c.ClusterID, c.String(), "", relation.Relation{})
+			p := criteria.NewParsedCriterion("inclusion", "", c.ClusterID, c.String(), "", relation.Relations{})
 			pc = append(pc, p)
 		}
 		cid++
@@ -180,13 +177,10 @@ func (s *Study) Relations() criteria.ParsedCriteria {
 	for _, c := range s.ExclusionCriteria {
 		relationR := c.Relations()
 		if len(relationR) > 0 {
-			for _, r := range c.Relations() {
-				q := variableCatalog.Question(r.ID)
-				p := criteria.NewParsedCriterion("exclusion", r.VariableType.String(), c.ClusterID, c.String(), q, *r)
-				pc = append(pc, p)
-			}
+			p := criteria.NewParsedCriterion("exclusion", "", c.ClusterID, c.String(), "", relationR)
+			pc = append(pc, p)
 		} else {
-			p := criteria.NewParsedCriterion("exclusion", "", c.ClusterID, c.String(), "", relation.Relation{})
+			p := criteria.NewParsedCriterion("exclusion", "", c.ClusterID, c.String(), "", relation.Relations{})
 			pc = append(pc, p)
 		}
 		cid++

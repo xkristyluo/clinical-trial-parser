@@ -28,17 +28,17 @@ var (
 )
 
 type ParsedCriterion struct {
-	EligibilityType string            `json:"eligibility_type,omitempty"` // inclusion or exclusion
-	VariableType    string            `json:"variable_type,omitempty"`    // numerical or ordinal
-	CriterionIndex  int               `json:"criterion_index"`
-	Criterion       string            `json:"criterion,omitempty"`
-	Question        string            `json:"question,omitempty"`
-	Relation        relation.Relation `json:"relation,omitempty"`
+	EligibilityType string             `json:"eligibility_type,omitempty"` // inclusion or exclusion
+	VariableType    string             `json:"variable_type,omitempty"`    // numerical or ordinal
+	CriterionIndex  int                `json:"criterion_index"`
+	Criterion       string             `json:"criterion,omitempty"`
+	Question        string             `json:"question,omitempty"`
+	Relation        relation.Relations `json:"relation,omitempty"`
 }
 
 type ParsedCriteria []*ParsedCriterion
 
-func NewParsedCriterion(eligibilityType, variableType string, criterionIndex int, criterion, question string, relation relation.Relation) *ParsedCriterion {
+func NewParsedCriterion(eligibilityType, variableType string, criterionIndex int, criterion, question string, relation relation.Relations) *ParsedCriterion {
 	return &ParsedCriterion{
 		EligibilityType: eligibilityType,
 		VariableType:    variableType,
