@@ -43,11 +43,35 @@ func (i *Interpreter) Interpret(input string) (relation.Relations, relation.Rela
 					orR.Start = int(item.pos)
 					orR.End = int(item.pos) + len(item.val)
 				}
+				if orR.Lower != nil && orR.Lower.Value == item.val {
+					if orR.Lower.Start == 0 {
+						orR.Lower.Start = int(item.pos)
+						orR.Lower.End = int(item.pos) + len(item.val)
+					}	
+				}
+				if orR.Upper != nil && orR.Upper.Value == item.val {
+					if orR.Upper.Start == 0 {
+						orR.Upper.Start = int(item.pos)
+						orR.Upper.End = int(item.pos) + len(item.val)
+					}
+				}
 			}
 			for _, andR := range andRs {
 				if item.val == andR.Name {
 					andR.Start = int(item.pos)
 					andR.End = int(item.pos) + len(item.val)
+				}
+				if andR.Lower != nil && andR.Lower.Value == item.val {
+					if andR.Lower.Start == 0 {
+						andR.Lower.Start = int(item.pos)
+						andR.Lower.End = int(item.pos) + len(item.val)
+					}	
+				}
+				if andR.Upper != nil && andR.Upper.Value == item.val {
+					if andR.Upper.Start == 0 {
+						andR.Upper.Start = int(item.pos)
+						andR.Upper.End = int(item.pos) + len(item.val)
+					}
 				}
 			}
 		}
