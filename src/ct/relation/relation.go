@@ -29,8 +29,14 @@ var (
 type Limit struct {
 	Incl  bool   `json:"incl"`  // True if limit is inclusive
 	Value string `json:"value"` // Value of limit bound
-	Start int `json:"start"`    // start position of limit bound
-	End int `json:"end"`        // end position of limit bound
+	Start int    `json:"start"` // start position of limit bound
+	End   int    `json:"end"`   // end position of limit bound
+}
+
+type Unit struct {
+	Value string `json:"value"` // Value of limit bound
+	Start int    `json:"start"` // start position of limit bound
+	End   int    `json:"end"`   // end position of limit bound
 }
 
 // Relation defines a boolean, nominal, ordinal, or numerical criterion.
@@ -38,7 +44,7 @@ type Relation struct {
 	ID           variables.ID   `json:"id,omitempty"`
 	Name         string         `json:"name"`            // Relation name, typically the variable name
 	DisplayName  string         `json:"-"`               // Variable display name
-	Unit         string         `json:"unit,omitempty"`  // Variable unit
+	Unit         *Unit          `json:"unit,omitempty"`  // Variable unit
 	Value        []string       `json:"value,omitempty"` // Valid values of categorical relation
 	Lower        *Limit         `json:"lower,omitempty"` // Lower bound of numerical relation condition
 	Upper        *Limit         `json:"upper,omitempty"` // Upper bound of numerical relation condition
@@ -113,8 +119,8 @@ func (r *Relation) HumanReadable() string {
 			}
 			s += r.Upper.Value
 		}
-		if r.Unit != "" {
-			s += " " + r.Unit
+		if r.Unit.Value != "" {
+			s += " " + r.Unit.Value
 		}
 		return s
 	}
@@ -134,7 +140,7 @@ func (r *Relation) SetVariableFields(v *variables.Variable) {
 
 // SetUnitField sets the variable unit to the default value if the unit missing.
 func (r *Relation) SetUnitField(v *variables.Variable) {
-	r.Unit = v.UnitName
+	r.Unit.Value = v.UnitName
 }
 
 // Normalize normalizes the relation by making the relation content
@@ -414,7 +420,7 @@ func (rs Relations) setRelationFields() {
 	for _, r := range rs {
 		if v := variableCatalog.Variable(r.ID); v != nil {
 			r.SetVariableFields(v)
-			if r.Unit == "" {
+			if r.Unit.Value == "" {
 				r.SetUnitField(v)
 			}
 		}

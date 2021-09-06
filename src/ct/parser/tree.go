@@ -200,17 +200,17 @@ func (n *Node) EvalNums() []string {
 }
 
 // EvalUnit evaluates and returns the unit stored in the terminal leaf.
-func (n *Node) EvalUnit() string {
-	unit := ""
+func (n *Node) EvalUnit() *relation.Unit {
+	unit := &relation.Unit{}
 	var eval func(n *Node)
 	eval = func(n *Node) {
-		if len(unit) > 0 {
+		if len(unit.Value) > 0 {
 			return
 		}
 		if n.left != nil {
 			m := n.left
 			if m.val == "U" {
-				unit = m.left.val
+				unit.Value = m.left.val
 				return
 			}
 			eval(m)
@@ -218,7 +218,7 @@ func (n *Node) EvalUnit() string {
 		if n.right != nil {
 			m := n.right
 			if m.val == "U" {
-				unit = m.left.val
+				unit.Value = m.left.val
 				return
 			}
 			eval(m)

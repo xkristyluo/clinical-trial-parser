@@ -47,12 +47,18 @@ func (i *Interpreter) Interpret(input string) (relation.Relations, relation.Rela
 					if orR.Lower.Start == 0 {
 						orR.Lower.Start = int(item.pos)
 						orR.Lower.End = int(item.pos) + len(item.val)
-					}	
+					}
 				}
 				if orR.Upper != nil && orR.Upper.Value == item.val {
 					if orR.Upper.Start == 0 {
 						orR.Upper.Start = int(item.pos)
 						orR.Upper.End = int(item.pos) + len(item.val)
+					}
+				}
+				if orR.Unit != nil && orR.Unit.Value == item.val {
+					if orR.Unit.Start == 0 {
+						orR.Unit.Start = int(item.pos)
+						orR.Unit.End = int(item.pos) + len(item.val)
 					}
 				}
 			}
@@ -65,12 +71,18 @@ func (i *Interpreter) Interpret(input string) (relation.Relations, relation.Rela
 					if andR.Lower.Start == 0 {
 						andR.Lower.Start = int(item.pos)
 						andR.Lower.End = int(item.pos) + len(item.val)
-					}	
+					}
 				}
 				if andR.Upper != nil && andR.Upper.Value == item.val {
 					if andR.Upper.Start == 0 {
 						andR.Upper.Start = int(item.pos)
 						andR.Upper.End = int(item.pos) + len(item.val)
+					}
+				}
+				if andR.Unit != nil && andR.Unit.Value == item.val {
+					if andR.Unit.Start == 0 {
+						andR.Unit.Start = int(item.pos)
+						andR.Unit.End = int(item.pos) + len(item.val)
 					}
 				}
 			}
