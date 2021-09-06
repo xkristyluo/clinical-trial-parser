@@ -80,9 +80,10 @@ func (t itemType) String() string {
 
 // Item defines the lexical item that is syntactically constructed from the lexer token.
 type Item struct {
-	typ itemType
-	val string
-	pos Pos
+	typ  itemType
+	val  string
+	pos  Pos
+	name string
 }
 
 // NewItem creates a new item.
@@ -137,7 +138,7 @@ func (i *Item) Negate() *Item {
 
 // String returns the string representation of the item.
 func (i *Item) String() string {
-	return fmt.Sprintf("{type:%q,value:%q,pos:%v}", i.typ.String(), i.val, i.pos)
+	return fmt.Sprintf("{type:%q,value:%q,pos:%v,name:%q}", i.typ.String(), i.val, i.pos, i.name)
 }
 
 // Items defines a slice of items.

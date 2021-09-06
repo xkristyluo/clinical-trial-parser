@@ -136,6 +136,7 @@ func (p *Parser) parseUnit() *Item {
 	if t := p.next(); t.typ == tokenUnit {
 		n := NewItem(itemUnit, t.val)
 		n.pos = t.pos
+		n.name = t.val
 		return n
 	}
 	return UnknownItem()
@@ -152,6 +153,7 @@ func (p *Parser) parseNumber() *Item {
 			n.Set(itemNumber, t.val)
 		}
 		n.pos = t.pos
+		n.name = t.val
 		return n
 	}
 	return UnknownItem()
@@ -161,6 +163,7 @@ func (p *Parser) parseIdentifier() *Item {
 	n := UnknownItem()
 	t := p.next()
 	n.pos = t.pos
+	n.name = t.val
 
 	if t.val == "to" {
 		n.Set(itemRange, t.val)
@@ -239,6 +242,7 @@ func (p *Parser) parseComparison() *Item {
 	n := UnknownItem()
 	t := p.next()
 	n.pos = t.pos
+	n.name = t.val
 
 	negate := false
 	if t.typ == tokenNegation && p.peek(1).typ != tokenEOF {
@@ -290,6 +294,7 @@ func (p *Parser) parseConjunction() *Item {
 	n := UnknownItem()
 	t := p.next()
 	n.pos = t.pos
+	n.name = t.val
 	if t.typ == tokenConjunction {
 		switch t.val {
 		case "or", "and/or":
@@ -314,6 +319,7 @@ func (p *Parser) parsePunctuation() *Item {
 	if t := p.next(); t.typ == tokenPunctuation {
 		n := NewItem(itemPunctuation, t.val)
 		n.pos = t.pos
+		n.name = t.val
 		return n
 	}
 	return UnknownItem()
@@ -323,6 +329,7 @@ func (p *Parser) parseSlash() *Item {
 	if t := p.next(); t.typ == tokenSlash {
 		n := NewItem(itemSlash, t.val)
 		n.pos = t.pos
+		n.name = t.val
 		return n
 	}
 	return UnknownItem()
@@ -332,6 +339,7 @@ func (p *Parser) parseDash() *Item {
 	if t := p.next(); t.typ == tokenDash {
 		n := NewItem(itemRange, t.val)
 		n.pos = t.pos
+		n.name = t.val
 		return n
 	}
 	return UnknownItem()
