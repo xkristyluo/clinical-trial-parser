@@ -2,7 +2,6 @@ package cfg
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"log"
 
@@ -13,10 +12,6 @@ import (
 	"github.com/facebookresearch/clinical-trial-parser/src/ct/variables"
 
 	"github.com/golang/glog"
-)
-
-var (
-	configFname = flag.String("conf", "", "configuration file")
 )
 
 // Parser defines the struct for processing eligibility criteria.
@@ -32,9 +27,9 @@ func NewParser() *Parser {
 }
 
 // Main function to parse eligibility criteria
-func CfgParse(registry string) (string, error) {
+func CfgParse(registry, configFname string) (string, error) {
 	p := NewParser()
-	if err := p.LoadParameters(); err != nil {
+	if err := p.LoadParameters(configFname); err != nil {
 		return "", fmt.Errorf("cfg parser failed to load config file: %v", err)
 	}
 	if err := p.InitParameters(); err != nil {
@@ -50,15 +45,13 @@ func CfgParse(registry string) (string, error) {
 }
 
 // LoadParameters loads variables and units from command line and a config file.
-func (p *Parser) LoadParameters() error {
-	flag.Parse()
-
-	log.Printf("config file path: %s", *configFname)
-	if len(*configFname) == 0 {
-		return fmt.Errorf("no configuration file found: %s", *configFname)
+func (p *Parser) LoadParameters(configFname string) error {
+	log.Printf("config file path: %s", configFname)
+	if len(configFname) == 0 {
+		return fmt.Errorf("no configuration file found: %s", configFname)
 	}
 
-	parameters, err := conf.Load(*configFname)
+	parameters, err := conf.Load(configFname)
 	if err != nil {
 		return err
 	}
