@@ -3,7 +3,7 @@
 package parser
 
 import (
-	"log"
+	"strings"
 
 	"github.com/facebookresearch/clinical-trial-parser/src/ct/parser/production"
 	"github.com/facebookresearch/clinical-trial-parser/src/ct/relation"
@@ -35,7 +35,6 @@ func NewInterpreter() *Interpreter {
 // Interpret interprets clinical trial criteria using parse trees and formal grammars.
 func (i *Interpreter) Interpret(input string) (relation.Relations, relation.Relations) {
 	list := i.parser.Parse(input)
-	log.Printf("%+v", list)
 	list.FixMissingVariable()
 	trees := i.buildTrees(list)
 	orRs, andRs := trees.Relations()
@@ -43,49 +42,37 @@ func (i *Interpreter) Interpret(input string) (relation.Relations, relation.Rela
 		for _, item := range listVal {
 			for _, orR := range orRs {
 				if item.val == orR.Name {
-					orR.Start = int(item.pos)
-					orR.End = int(item.pos) + len(item.name)
+					orR.Start = UnicodeIndex(input, item.val)
+					orR.End = orR.Start + len(item.val)
 				}
 				if orR.Lower != nil && orR.Lower.Value == item.val {
 					if orR.Lower.Start == 0 {
-						orR.Lower.Start = int(item.pos)
-						orR.Lower.End = int(item.pos) + len(item.name)
+						orR.Lower.Start = UnicodeIndex(input, item.val)
+						orR.Lower.End = orR.Lower.Start + len(item.val)
 					}
 				}
 				if orR.Upper != nil && orR.Upper.Value == item.val {
 					if orR.Upper.Start == 0 {
-						orR.Upper.Start = int(item.pos)
-						orR.Upper.End = int(item.pos) + len(item.name)
-					}
-				}
-				if orR.Unit != nil && orR.Unit.Value == item.val {
-					if orR.Unit.Start == 0 {
-						orR.Unit.Start = int(item.pos)
-						orR.Unit.End = int(item.pos) + len(item.name)
+						orR.Upper.Start = UnicodeIndex(input, item.val)
+						orR.Upper.End = orR.Upper.Start + len(item.val)
 					}
 				}
 			}
 			for _, andR := range andRs {
 				if item.val == andR.Name {
-					andR.Start = int(item.pos)
-					andR.End = int(item.pos) + len(item.name)
+					andR.Start = UnicodeIndex(input, item.val)
+					andR.End = andR.Start + len(item.val)
 				}
 				if andR.Lower != nil && andR.Lower.Value == item.val {
 					if andR.Lower.Start == 0 {
-						andR.Lower.Start = int(item.pos)
-						andR.Lower.End = int(item.pos) + len(item.name)
+						andR.Lower.Start = UnicodeIndex(input, item.val)
+						andR.Lower.End = andR.Lower.Start + len(item.val)
 					}
 				}
 				if andR.Upper != nil && andR.Upper.Value == item.val {
 					if andR.Upper.Start == 0 {
-						andR.Upper.Start = int(item.pos)
-						andR.Upper.End = int(item.pos) + len(item.name)
-					}
-				}
-				if andR.Unit != nil && andR.Unit.Value == item.val {
-					if andR.Unit.Start == 0 {
-						andR.Unit.Start = int(item.pos)
-						andR.Unit.End = int(item.pos) + len(item.name)
+						andR.Upper.Start = UnicodeIndex(input, item.val)
+						andR.Upper.End = andR.Upper.Start + len(item.val)
 					}
 				}
 			}
@@ -103,4 +90,15 @@ func (i *Interpreter) buildTrees(list List) Trees {
 	}
 	trees.Dedupe()
 	return trees
+}
+
+//get unicode index of substring
+func UnicodeIndex(str, substr string) int {
+	result := strings.Index(str, substr)
+	if result >= 0 {
+		prefix := []byte(str)[0:result]
+		rs := []rune(string(prefix))
+		result = len(rs)
+	}
+	return result
 }
