@@ -57,6 +57,10 @@ func (i *Interpreter) Interpret(input string) (relation.Relations, relation.Rela
 						orR.Upper.End = orR.Upper.Start + len(item.val)
 					}
 				}
+				if orR.Unit != nil && orR.Unit.Value == item.val && item.val != "" {
+					orR.Unit.Start = append(orR.Unit.Start, UnicodeIndex(input, item.val))
+					orR.Unit.End = append(orR.Unit.End, UnicodeIndex(input, item.val)+len(item.val))
+				}
 			}
 			for _, andR := range andRs {
 				if item.val == andR.Name {
@@ -74,6 +78,12 @@ func (i *Interpreter) Interpret(input string) (relation.Relations, relation.Rela
 						andR.Upper.Start = UnicodeIndex(input, item.val)
 						andR.Upper.End = andR.Upper.Start + len(item.val)
 					}
+				}
+
+				if andR.Unit != nil && andR.Unit.Value == item.val && item.val != "" {
+					// log.Printf("%+v-%+v-%+v-%+v", andR.Unit.Value, item.val, item.pos, UnicodeIndex(input, item.val))
+					andR.Unit.Start = append(andR.Unit.Start, UnicodeIndex(input, item.val))
+					andR.Unit.End = append(andR.Unit.End, UnicodeIndex(input, item.val)+len(item.val))
 				}
 			}
 		}

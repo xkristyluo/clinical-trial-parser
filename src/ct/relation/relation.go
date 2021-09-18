@@ -35,8 +35,8 @@ type Limit struct {
 
 type Unit struct {
 	Value string `json:"value"` // Value of limit bound
-	Start int    `json:"start"` // start position of limit bound
-	End   int    `json:"end"`   // end position of limit bound
+	Start []int  `json:"start"` // start position of limit bound
+	End   []int  `json:"end"`   // end position of limit bound
 }
 
 // Relation defines a boolean, nominal, ordinal, or numerical criterion.
