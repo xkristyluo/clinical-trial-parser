@@ -420,8 +420,10 @@ func (rs Relations) setRelationFields() {
 	for _, r := range rs {
 		if v := variableCatalog.Variable(r.ID); v != nil {
 			r.SetVariableFields(v)
-			if r.Unit.Value == "" {
-				r.SetUnitField(v)
+			if r.Unit != nil {
+				if r.Unit.Value == "" {
+					r.SetUnitField(v)
+				}
 			}
 		}
 	}
