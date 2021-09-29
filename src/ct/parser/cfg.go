@@ -14,6 +14,9 @@ type Element struct {
 	begin int
 	split int
 	end   int
+	pos   int
+	width int
+	val   string
 }
 
 // NewBinary creates a binary element.
@@ -86,6 +89,11 @@ func (g *CFG) BuildTrees(items Items) Trees {
 		for A := range rules.terminalRules[term] {
 			state[k][k].Add(A)
 			children[k][k][A] = NewUnary(items[i].val).Set(k, k, k)
+			item_new := NewUnary(items[i].val).Set(k, k, k)
+			item_new.pos = int(items[i].pos)
+			item_new.width = int(items[i].pos) + len(items[i].name)
+			item_new.val = items[i].name
+			children[k][k][A] = item_new
 		}
 		added := true
 		for added {
@@ -143,7 +151,7 @@ func (g *CFG) BuildTrees(items Items) Trees {
 	var iter func(n *Node, p Element)
 
 	iter = func(n *Node, p Element) {
-		node := NewNode(p.leftNonTerminal)
+		node := NewNode(p.leftNonTerminal, p.pos, p.width)
 		n.left = node
 		next, ok := children[p.begin][p.split][p.leftNonTerminal]
 		if ok {
@@ -154,7 +162,7 @@ func (g *CFG) BuildTrees(items Items) Trees {
 			return
 		}
 
-		node = NewNode(p.rightNonTerminal)
+		node = NewNode(p.rightNonTerminal, p.pos, p.width)
 		n.right = node
 		next, ok = children[p.split+1][p.end][p.rightNonTerminal]
 		if ok {
@@ -168,7 +176,7 @@ func (g *CFG) BuildTrees(items Items) Trees {
 		score := 1.0 - 0.5*float64(k)/float64(dim)
 		for i := 0; i <= k; i++ {
 			if next, ok := children[i][dim+i-k-1]["S"]; ok {
-				node := NewNode("S")
+				node := NewNode("S", 0, 0)
 				iter(node, next)
 				if node.Size() > 1 {
 					tree := NewTree(node, score)

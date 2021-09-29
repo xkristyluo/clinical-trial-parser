@@ -118,11 +118,13 @@ type Node struct {
 	val   string
 	left  *Node
 	right *Node
+	pos   int
+	width int
 }
 
 // NewNode creates a new node.
-func NewNode(val string) *Node {
-	return &Node{val: val}
+func NewNode(val string, pos int, width int) *Node {
+	return &Node{val: val, pos: pos, width: width}
 }
 
 // Size calculates the number of leafs (terminals).
@@ -172,6 +174,12 @@ func (n *Node) EvalVariable() string {
 	}
 	return variable
 }
+func (n *Node) EvalStart() int {
+	return n.left.left.pos
+}
+func (n *Node) EvalEnd() int {
+	return n.left.left.width
+}
 
 // EvalNums evaluates and returns the list of numbers stored in the terminal leafs.
 func (n *Node) EvalNums() []string {
@@ -211,6 +219,8 @@ func (n *Node) EvalUnit() *relation.Unit {
 			m := n.left
 			if m.val == "U" {
 				unit.Value = m.left.val
+				unit.Start = append(unit.Start, m.left.pos)
+				unit.End = append(unit.End, m.left.width)
 				return
 			}
 			eval(m)
@@ -259,6 +269,10 @@ func (n *Node) EvalBound() (*relation.Limit, bool) {
 	}
 	num := n.right.left
 	l.Value = num.left.val
+	l.Start = append(l.Start, t.left.pos)
+	l.Start = append(l.Start, num.left.pos)
+	l.End = append(l.End, t.left.width)
+	l.End = append(l.End, num.left.width)
 	return l, lower
 }
 
@@ -288,6 +302,8 @@ func (n *Node) EvalRelation() (*relation.Relation, error) {
 	}
 
 	r.Name = left.EvalVariable()
+	r.Start = left.EvalStart()
+	r.End = left.EvalEnd()
 	r.ID, _ = variables.Get().ID(r.Name)
 
 	// Check that the attribute node A exists:

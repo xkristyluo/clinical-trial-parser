@@ -163,7 +163,6 @@ func (p *Parser) parseIdentifier() *Item {
 	n := UnknownItem()
 	t := p.next()
 	n.pos = t.pos
-	n.name = t.val
 
 	if t.val == "to" {
 		n.Set(itemRange, t.val)
@@ -215,6 +214,12 @@ loop:
 			if t.typ == tokenRightParenthesis {
 				t = p.peek(identifierCnt)
 			}
+		} else {
+			if t.typ == tokenPunctuation {
+				break
+			} else {
+				candidate += " " + t.val
+			}
 		}
 		candidate += " " + t.val
 		isIdentifier = t.typ == tokenIdentifier || t.typ == tokenConjunction || t.typ == tokenSlash
@@ -225,11 +230,13 @@ loop:
 		// swallow
 	case variableMatchCnt < unitMatchCnt:
 		n.Set(itemUnit, unit)
+		n.name = candidate
 		for i := 1; i < unitMatchCnt; i++ {
 			p.next()
 		}
 	default:
 		n.Set(itemVariable, variable)
+		n.name = candidate
 		for i := 1; i < variableMatchCnt; i++ {
 			p.next()
 		}

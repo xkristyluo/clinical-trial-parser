@@ -29,8 +29,8 @@ var (
 type Limit struct {
 	Incl  bool   `json:"incl"`  // True if limit is inclusive
 	Value string `json:"value"` // Value of limit bound
-	Start int    `json:"start"` // start position of limit bound
-	End   int    `json:"end"`   // end position of limit bound
+	Start []int  `json:"start"` // start position of limit bound
+	End   []int  `json:"end"`   // end position of limit bound
 }
 
 type Unit struct {
