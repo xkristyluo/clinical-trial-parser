@@ -229,6 +229,8 @@ func (n *Node) EvalUnit() *relation.Unit {
 			m := n.right
 			if m.val == "U" {
 				unit.Value = m.left.val
+				unit.Start = append(unit.Start, m.left.pos)
+				unit.End = append(unit.End, m.left.width)
 				return
 			}
 			eval(m)
