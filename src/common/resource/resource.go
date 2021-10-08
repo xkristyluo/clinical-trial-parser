@@ -12,10 +12,10 @@ import (
 
 var (
 	// ResourcePath is the default path to the resource directory.
-	ResourcePath = "/github.com/facebookresearch/clinical-trial-parser/src/resources"
+	ResourcePath = "/github.com/xkristyluo/clinical-trial-parser/src/resources"
 
 	// DataPath is the default path to the data directory.
-	DataPath = "/github.com/facebookresearch/clinical-trial-parser/data"
+	DataPath = "/github.com/xkristyluo/clinical-trial-parser/data"
 )
 
 // GetResourcePath returns the path to the project's resource directory.
