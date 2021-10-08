@@ -221,7 +221,7 @@ loop:
 				candidate += " " + t.val
 			}
 		}
-		candidate += " " + t.val
+		// candidate += " " + t.val
 		isIdentifier = t.typ == tokenIdentifier || t.typ == tokenConjunction || t.typ == tokenSlash
 	}
 

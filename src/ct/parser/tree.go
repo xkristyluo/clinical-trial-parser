@@ -4,7 +4,9 @@ package parser
 
 import (
 	"fmt"
+	"log"
 	"sort"
+	"strconv"
 
 	"github.com/facebookresearch/clinical-trial-parser/src/common/col/set"
 	"github.com/facebookresearch/clinical-trial-parser/src/ct/relation"
@@ -207,6 +209,42 @@ func (n *Node) EvalNums() []string {
 	return set.Slice()
 }
 
+// EvalNums evaluates and returns the list of numbers stored in the terminal leafs.
+func (n *Node) EvalPos(s string) []string {
+	set := set.New()
+	var eval func(n *Node)
+	eval = func(n *Node) {
+		if n.left != nil {
+			m := n.left
+			if m.val == "N" {
+				if s == "Start" {
+					set.Add(strconv.Itoa(m.left.pos))
+				}
+				if s == "End" {
+					set.Add(strconv.Itoa(m.left.width))
+				}
+			} else {
+				eval(m)
+			}
+		}
+		if n.right != nil {
+			m := n.right
+			if m.val == "N" {
+				if s == "Start" {
+					set.Add(strconv.Itoa(m.left.pos))
+				}
+				if s == "End" {
+					set.Add(strconv.Itoa(m.left.width))
+				}
+			} else {
+				eval(m)
+			}
+		}
+	}
+	eval(n)
+	return set.Slice()
+}
+
 // EvalUnit evaluates and returns the unit stored in the terminal leaf.
 func (n *Node) EvalUnit() *relation.Unit {
 	unit := &relation.Unit{}
@@ -216,6 +254,7 @@ func (n *Node) EvalUnit() *relation.Unit {
 			return
 		}
 		if n.left != nil {
+			log.Printf("%+v", n.left)
 			m := n.left
 			if m.val == "U" {
 				unit.Value = m.left.val
@@ -223,6 +262,7 @@ func (n *Node) EvalUnit() *relation.Unit {
 				unit.End = append(unit.End, m.left.width)
 				return
 			}
+
 			eval(m)
 		}
 		if n.right != nil {
@@ -283,8 +323,14 @@ func (n *Node) EvalRange() *relation.Limit {
 	l := &relation.Limit{}
 	l.Incl = true
 	nums := n.EvalNums()
+	starts := n.EvalPos("Start")
+	ends := n.EvalPos("End")
 	if len(nums) == 1 {
 		l.Value = nums[0]
+		startint, _ := strconv.Atoi(starts[0])
+		endint, _ := strconv.Atoi(ends[0])
+		l.Start = append(l.Start, startint)
+		l.End = append(l.End, endint)
 	}
 	return l
 }
@@ -315,7 +361,6 @@ func (n *Node) EvalRelation() (*relation.Relation, error) {
 	}
 
 	m := right
-
 	r.Unit = m.EvalUnit()
 
 	// Check the left branch of A:

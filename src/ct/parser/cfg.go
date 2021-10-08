@@ -92,7 +92,7 @@ func (g *CFG) BuildTrees(items Items) Trees {
 			item_new := NewUnary(items[i].val).Set(k, k, k)
 			item_new.pos = int(items[i].pos)
 			item_new.width = int(items[i].pos) + len(items[i].name)
-			item_new.val = items[i].name
+			// item_new.val = items[i].name
 			children[k][k][A] = item_new
 		}
 		added := true

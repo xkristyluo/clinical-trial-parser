@@ -21,6 +21,7 @@ B -> T L | L T
 W -> O B
 L -> N U | N
 Y -> D L
+T -> N | N U| U
 
 #terminals:
 
