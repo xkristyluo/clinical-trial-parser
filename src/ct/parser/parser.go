@@ -172,6 +172,7 @@ func (p *Parser) parseIdentifier() *Item {
 	variable := ""
 	unit := ""
 	candidate := t.val
+	var candidateBackup string
 
 	variableMatchCnt := 0
 	unitMatchCnt := 0
@@ -214,29 +215,26 @@ loop:
 			if t.typ == tokenRightParenthesis {
 				t = p.peek(identifierCnt)
 			}
-		} else {
-			if t.typ == tokenPunctuation {
-				break
-			} else {
-				candidate += " " + t.val
-			}
 		}
-		// candidate += " " + t.val
+		candidateBackup = candidate
+		candidate += " " + t.val
 		isIdentifier = t.typ == tokenIdentifier || t.typ == tokenConjunction || t.typ == tokenSlash
 	}
 
 	switch {
 	case variableMatchCnt == 0 && unitMatchCnt == 0:
+		n.name = t.val
+
 		// swallow
 	case variableMatchCnt < unitMatchCnt:
 		n.Set(itemUnit, unit)
-		n.name = candidate
+		n.name = candidateBackup
 		for i := 1; i < unitMatchCnt; i++ {
 			p.next()
 		}
 	default:
 		n.Set(itemVariable, variable)
-		n.name = candidate
+		n.name = candidateBackup
 		for i := 1; i < variableMatchCnt; i++ {
 			p.next()
 		}
