@@ -32,7 +32,7 @@
 500,mm,mm,mm,
 501,cm,cm,cm,
 502,m,m,m,
-503,inches,inches,inches|in,
+503,inches,inches,inches,
 504,mps_disc_area,MPS disc area,mps disc area*,
 600,mmhg,mmhg,mmhg|mm hg,
 601,cmh2o,cmh2o,cmh2o|cmh20,
@@ -45,3 +45,4 @@
 800,breaths/min,breaths/min,breaths/min|breaths per min,respiratory_rate
 801,beats/min,beats/min,beats/min|beats per min,heart_rate
 802,/min,/min,/min,
+803,mcg/l,Microgram per Liter,milligram s /cubic meter|mcg/l|microgram per liter|ng/ml|pg/ul|microgram/liter|microgram s /litre|mcg/dm3|nanogram per milliliter|ug/l|microgram/litre|microgram/liter  qualifier value|nanogram/milliliter|milligram per cubic meter|microgram per cubic decimeter|nanogram/millilitre|ug/dm3|mg/m3|picogram per microliter|nanogram/milliliter  qualifier value,
