@@ -76,11 +76,8 @@ func (s *Study) Parse() *Study {
 		andRelations.Process()
 
 		if !andRelations.Empty() {
-			for _, r := range andRelations {
-				rs := relation.Relations{r}
-				criterion := criteria.NewCriterion(inclusion, rs.MinScore(), rs, index)
-				inclusionCriteria = append(inclusionCriteria, criterion)
-			}
+			criterion := criteria.NewCriterion(inclusion, andRelations.MinScore(), andRelations, index)
+			inclusionCriteria = append(inclusionCriteria, criterion)
 		} else {
 			criterion := criteria.NewCriterion(inclusion, orRelations.MinScore(), orRelations, index)
 			inclusionCriteria = append(inclusionCriteria, criterion)
@@ -99,15 +96,13 @@ func (s *Study) Parse() *Study {
 		andRelations.Negate()
 
 		if !orRelations.Empty() {
-			for _, r := range orRelations {
-				rs := relation.Relations{r}
-				criterion := criteria.NewCriterion(exclusion, rs.MinScore(), rs, index)
-				exclusionCriteria = append(exclusionCriteria, criterion)
-			}
+			criterion := criteria.NewCriterion(exclusion, orRelations.MinScore(), orRelations, index)
+			exclusionCriteria = append(exclusionCriteria, criterion)
 		} else {
 			criterion := criteria.NewCriterion(exclusion, andRelations.MinScore(), andRelations, index)
 			exclusionCriteria = append(exclusionCriteria, criterion)
 		}
+
 	}
 
 	s.ExclusionCriteria = exclusionCriteria
