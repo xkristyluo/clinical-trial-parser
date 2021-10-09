@@ -32,10 +32,67 @@ func NewInterpreter() *Interpreter {
 	return &Interpreter{parser: NewParser(), grammar: NewCFGrammar(production.CriterionRules)}
 }
 
+//get the max value in array of int
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+// check whether an integer in array of integer
+func intInSlice(a int, list []int) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
+}
+
 // Interpret interprets clinical trial criteria using parse trees and formal grammars.
 func (i *Interpreter) Interpret(input string) (relation.Relations, relation.Relations) {
-	list := i.parser.Parse(input)
-	list.FixMissingVariable()
+	listCopy := i.parser.Parse(input)
+	listCopy.FixMissingVariable()
+	var list List
+	for _, listVal := range listCopy {
+		unitCount, compCount, numberCount := 0, 0, 0
+		var markInsert []int
+		listNew := NewItems()
+		for k, item := range listVal {
+			if item.typ == itemVariable {
+				break
+			}
+			if item.typ == itemNumber {
+				numberCount += 1
+				if numberCount > max(compCount, unitCount) {
+					markInsert = append(markInsert, k)
+				}
+			}
+			if item.typ == itemComparison {
+				compCount += 1
+				if compCount > max(numberCount, unitCount) {
+					markInsert = append(markInsert, k)
+				}
+			}
+			if item.typ == itemUnit {
+				unitCount += 1
+				if unitCount > max(numberCount, compCount) {
+					markInsert = append(markInsert, k)
+				}
+			}
+		}
+		for k, item := range listVal {
+			if intInSlice(k, markInsert) {
+				newIt := &Item{typ: itemVariable, val: "IGNORE"}
+				listNew.Add(newIt)
+				listNew.Add(item)
+			} else {
+				listNew.Add(item)
+			}
+		}
+		list = append(list, listNew)
+	}
 	trees := i.buildTrees(list)
 	orRs, andRs := trees.Relations()
 	// 	m := make(map[string]int)
