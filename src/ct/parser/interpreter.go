@@ -81,6 +81,10 @@ func (i *Interpreter) Interpret(input string) (relation.Relations, relation.Rela
 					markInsert = append(markInsert, k)
 				}
 			}
+			if item.typ == itemRange {
+				markInsert = append(markInsert, k)
+				break
+			}
 		}
 		for k, item := range listVal {
 			if intInSlice(k, markInsert) {
