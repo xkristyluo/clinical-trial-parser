@@ -5,7 +5,7 @@
 103,ordinal,cps,Child-Pugh score,child-pugh|child-pugh score|childs pugh|child pugh,5|6|7|8|9|10|11|12|13|14|15,,What is your Child-Pugh score?
 104,ordinal,fitzpatrick_skin_type,Fitzpatrick skin type,fitzpatrick|fitzpatrick skin type*|fitzpatrick phototype*,1|2|3|4|5|6,,What is your Fitzpatrick skin type?
 105,ordinal,fitzpatrick_wrinkle_scale,Fitzpatrick wrinkle scale,fitzpatrick wrinkle,1|2|3|4|5|6|7|8|9,,What is your Fitzpatrick wrinkle scale?
-200,numerical,age,Age,age|aged|ages|years old,0.0|120.0,year,How old are you?
+200,numerical,age,Age,age|aged|ages,0.0|120.0,year,How old are you?
 201,numerical,height,Height,heigh*,0.0|500.0,,What is your height?
 202,numerical,weight,Weight,weigh*|body weigh*,0.0|300.0,,What is your weight?
 203,numerical,bmi,BMI,body mass index|bmi,0.0|100.0,kg/m2,What is your BMI?
