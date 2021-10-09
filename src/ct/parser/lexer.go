@@ -30,6 +30,7 @@ var key = map[string]tokenType{
 	"below":   tokenLessComparison,
 	"under":   tokenLessComparison,
 	"younger": tokenLessComparison,
+	"within":  tokenLessComparison,
 	"above":   tokenGreaterComparison,
 	"greater": tokenGreaterComparison,
 	"higher":  tokenGreaterComparison,
