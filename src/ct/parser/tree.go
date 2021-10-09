@@ -216,7 +216,7 @@ func (n *Node) EvalPos(s string) []string {
 	eval = func(n *Node) {
 		if n.left != nil {
 			m := n.left
-			if m.val == "N" {
+			if m.val == "N" || m.val == "D" {
 				if s == "Start" {
 					set.Add(strconv.Itoa(m.left.pos))
 				}
@@ -327,10 +327,14 @@ func (n *Node) EvalRange() *relation.Limit {
 	ends := n.EvalPos("End")
 	if len(nums) == 1 {
 		l.Value = nums[0]
-		startint, _ := strconv.Atoi(starts[0])
-		endint, _ := strconv.Atoi(ends[0])
-		l.Start = append(l.Start, startint)
-		l.End = append(l.End, endint)
+		for _, start := range starts {
+			startint, _ := strconv.Atoi(start)
+			l.Start = append(l.Start, startint)
+		}
+		for _, end := range ends {
+			endint, _ := strconv.Atoi(end)
+			l.End = append(l.End, endint)
+		}
 	}
 	return l
 }
