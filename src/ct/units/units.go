@@ -213,5 +213,8 @@ func DefaultCatalog() *Units {
 	aliases = []string{"lln", "lower limit of normal", "lower limits of normal"}
 	catalog.Add("604", "lln", "lln", aliases, "")
 
+	aliases = []string{"years old", "year old"}
+	catalog.Add("199", "years old", "years old", aliases, "")
+
 	return catalog
 }
