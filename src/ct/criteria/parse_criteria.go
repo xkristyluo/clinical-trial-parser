@@ -60,6 +60,7 @@ func (p *ParsedCriteria) JSON() string {
 // "Does not meet inclusion criteria" like criteria are removed.
 func Normalize(s string) string {
 	s = reDeleteCriterion.ReplaceAllString(s, "")
+	s = strings.Replace(s, "•", "-", -1)
 	return s
 }
 
