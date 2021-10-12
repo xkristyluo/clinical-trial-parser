@@ -57,9 +57,7 @@ func (p *Parser) peek(cnt int) *Token {
 
 // Parser methods:
 
-// parseSegment parses a segment of tokens from the beginning to the end of the input string
-// or delimited by a pair of left and right parenthesises.
-func (p *Parser) parseSegment(tokenEnd tokenType) List {
+func (p *Parser) parseSegmentWithoutR(tokenEnd tokenType) List {
 	list := make(List, 0)
 	nodes := NewItems()
 
@@ -132,7 +130,107 @@ loop:
 	return list
 }
 
+// parseSegment parses a segment of tokens from the beginning to the end of the input string
+// or delimited by a pair of left and right parenthesises.
+func (p *Parser) parseSegment(tokenEnd tokenType) List {
+	list := make(List, 0)
+	nodes := NewItems()
+
+loop:
+	for {
+		switch p.peek(1).typ {
+		case tokenLeftParenthesis:
+			p.next()
+			if tokenEnd == tokenRightParenthesis {
+				break loop
+			}
+			newNodes := p.parseSegmentWithoutR(tokenRightParenthesis)
+			for i := 0; i < len(newNodes); i++ {
+				if newNodes[i].Len() == 1 {
+					// Skip one-token segment which most likely is an abbreviation.
+				} else {
+					list = append(list, newNodes[i])
+				}
+			}
+		case tokenRightParenthesis:
+			p.next()
+			newNodes := p.parseSegment(tokenEnd)
+			for i := 0; i < len(newNodes); i++ {
+				if newNodes[i].Len() == 1 {
+					// Skip one-token segment which most likely is an abbreviation.
+				} else {
+					list = append(list, newNodes[i])
+				}
+			}
+		case tokenIdentifier:
+			n := p.parseIdentifier()
+			nodes.Add(n)
+		case tokenNumber:
+			if n := p.parseNumber(); n.Valid() {
+				nodes.Add(n)
+			}
+		case tokenUnit:
+			if n := p.parseUnit(); n.Valid() {
+				nodes.Add(n)
+			}
+		case tokenNegation, tokenComparison, tokenLessComparison, tokenGreaterComparison:
+			if n := p.parseComparison(); n.Valid() {
+				nodes.Add(n)
+			}
+		case tokenConjunction:
+			if n := p.parseConjunction(); n.Valid() {
+				nodes.Add(n)
+			}
+		case tokenSlash:
+			if nodes.LastType() == itemNumber {
+				// Because a number preceded the slash, these tokens
+				// may compose to a unit, such as '/ul'.
+				n := p.parseIdentifier()
+				nodes.Add(n)
+			} else {
+				if n := p.parseSlash(); n.Valid() {
+					nodes.Add(n)
+				}
+			}
+		case tokenDash:
+			if n := p.parseDash(); n.Valid() {
+				nodes.Add(n)
+			}
+		case tokenPunctuation:
+			if n := p.parsePunctuation(); n.Valid() {
+				nodes.Add(n)
+			}
+		case tokenEOF:
+			break loop
+		case tokenEnd:
+			p.next()
+			break loop
+		default:
+			p.next()
+		}
+	}
+	if !nodes.Empty() {
+		list = append(list, nodes)
+	}
+	return list
+}
+
 func (p *Parser) parseUnit() *Item {
+	// 	n := UnknownItem()
+	// 	t := p.next()
+	// 	n.pos = t.pos
+	// 	n.name = t.val
+	//
+	// 	if t.typ == tokenUnit {
+	// 		if p.peek(1).typ == tokenUnit {
+	// 			n.name = n.name +" "+ p.peek(1).val
+	// 			p.next()
+	// 			n.Set(itemUnit, n.name)
+	// 		} else {
+	// 			n.Set(itemUnit, n.name)
+	// 		}
+	// 	}
+	// 		return n
 	if t := p.next(); t.typ == tokenUnit {
 		n := NewItem(itemUnit, t.val)
 		n.pos = t.pos
@@ -259,17 +357,45 @@ func (p *Parser) parseComparison() *Item {
 	case containsStrings(t.val, "<", "=") || containsStrings(t.val, "≤"):
 		n.Set(itemComparison, "≤")
 	case containsStrings(t.val, "<"):
-		n.Set(itemComparison, "<")
+		if p.peek(1).val == "or" {
+			p.next()
+			if p.peek(1).val == "=" {
+				p.next()
+				n.Set(itemComparison, "≤")
+			}
+		} else {
+			n.Set(itemComparison, "<")
+		}
 	case containsStrings(t.val, ">", "=") || containsStrings(t.val, "≥"):
 		n.Set(itemComparison, "≥")
 	case containsStrings(t.val, ">"):
-		n.Set(itemComparison, ">")
+		if p.peek(1).val == "or" {
+			p.next()
+			n.name = n.name + " or"
+			if p.peek(1).val == "=" {
+				p.next()
+				n.name = n.name + " ="
+				n.Set(itemComparison, "≥")
+			}
+		} else {
+			n.Set(itemComparison, ">")
+		}
 	case t.typ == tokenLessComparison:
 		switch {
 		case p.hasEqual():
 			n.Set(itemComparison, "≤")
 		default:
-			n.Set(itemComparison, "<")
+			if p.peek(1).val == "the" {
+				p.next()
+				if p.peek(1).val == "last" || p.peek(1).val == "next" || p.peek(1).val == "past" || p.peek(1).val == "first" {
+					p.next()
+					n.Set(itemComparison, "≤")
+				} else {
+					n.Set(itemComparison, "≤")
+				}
+			} else {
+				n.Set(itemComparison, "<")
+			}
 		}
 	case t.typ == tokenGreaterComparison:
 		switch {
@@ -286,6 +412,16 @@ func (p *Parser) parseComparison() *Item {
 			if p.peek(1).val == "least" {
 				p.next()
 				n.Set(itemComparison, "≥")
+			}
+		case "within":
+			if p.peek(1).val == "the" {
+				p.next()
+				if p.peek(1).val == "last" {
+					p.next()
+					n.Set(itemComparison, "≤")
+				} else {
+					n.Set(itemComparison, "≤")
+				}
 			}
 		}
 	}
